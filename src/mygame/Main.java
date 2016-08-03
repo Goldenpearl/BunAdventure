@@ -35,6 +35,9 @@ public class Main extends SimpleApplication {
     Boolean isJumping = false;
     Float jumpArc = .001f;
     float bunny_starting_altitude = -3f;
+    float camAbove =3.0f;
+    float camBehind =3.5f;
+    float camCenter = 2.0f;
     @Override
     public void simpleInitApp() {
          /** create a blue box at coordinates (1,-1,1) */
@@ -87,6 +90,8 @@ public class Main extends SimpleApplication {
         sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f));
         rootNode.addLight(sun);
         initKeys();
+        Vector3f v = bunny.getLocalTranslation();
+        cam.setLocation(new Vector3f(v.x + camCenter, v.y +camAbove, v.z+camBehind));
     }
     
 /** Custom Keybinding: Map named actions to inputs. */
@@ -158,14 +163,15 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleUpdate(float tpf) {
        // bunnyCube.rotate(0, 2*tpf, 0);
+        Vector3f v = bunny.getLocalTranslation();
+        cam.setLocation(new Vector3f(v.x + camCenter, v.y +camAbove, v.z+camBehind));
         if(isJumping)
         {
-            Vector3f v = bunny.getLocalTranslation();
-            bunny.setLocalTranslation(v.x, v.y + jumpArc*speed*2/3, v.z);
+            bunny.setLocalTranslation(v.x, v.y + jumpArc*speed*2/3, 3.0f);
+            //TODO shake camera when jumping; dont follow z so closeley
         }
         else
         {
-            Vector3f v = bunny.getLocalTranslation();
             if(v.y>bunny_starting_altitude)
             bunny.setLocalTranslation(v.x, v.y - jumpArc*speed/2, v.z);
         }
