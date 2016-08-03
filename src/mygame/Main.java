@@ -29,6 +29,10 @@ public class Main extends SimpleApplication {
     Spatial bunny;
     protected Geometry bunnyCube;
     Boolean isRunning=true;
+    int speed =3;
+    Boolean isJumping = false;
+    Float jumpArc = .001f;
+    float bunny_starting_altitude = -3f;
     @Override
     public void simpleInitApp() {
          /** create a blue box at coordinates (1,-1,1) */
@@ -74,7 +78,7 @@ public class Main extends SimpleApplication {
         bunny = assetManager.loadModel("Models/bun/bun.j3o");
         bunny.scale(0.35f, 0.35f, 0.35f);
         bunny.rotate(0.0f, -3.0f, 0.0f);
-        bunny.setLocalTranslation(2.0f, -3.0f, 2.0f);
+        bunny.setLocalTranslation(2.0f, bunny_starting_altitude, 2.0f);
         rootNode.attachChild(bunny);
         // You must add a light to make the model visible
         DirectionalLight sun = new DirectionalLight();
@@ -90,10 +94,11 @@ public class Main extends SimpleApplication {
     inputManager.addMapping("Right",  new KeyTrigger(KeyInput.KEY_K));
     inputManager.addMapping("Forward", new KeyTrigger(KeyInput.KEY_U));
     inputManager.addMapping("Backwards", new KeyTrigger(KeyInput.KEY_J));
-    inputManager.addMapping("Rotate", new KeyTrigger(KeyInput.KEY_SPACE),
+    inputManager.addMapping("Rotate", new KeyTrigger(KeyInput.KEY_Y),
                                       new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+    inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
     // Add the names to the action listener.
-    inputManager.addListener(actionListener,"Pause");
+    inputManager.addListener(actionListener, "Jump", "Pause");
     inputManager.addListener(analogListener,"Left", "Right", "Forward", "Backwards", "Rotate");
 
   }
@@ -103,9 +108,22 @@ public class Main extends SimpleApplication {
       if (name.equals("Pause") && !keyPressed) {
         isRunning = !isRunning;
       }
+       if(isRunning && name.equals("Jump"))
+        {
+          triggerJump();
+        }
     }
   };
 
+  private void triggerJump()
+  {
+        if(!isJumping)
+        {
+            isJumping = true;
+        }
+        else isJumping = false;
+        
+  }
   private AnalogListener analogListener = new AnalogListener() {
   
       public void onAnalog(String name, float value, float tpf) {
@@ -137,6 +155,17 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleUpdate(float tpf) {
        // bunnyCube.rotate(0, 2*tpf, 0);
+        if(isJumping)
+        {
+            Vector3f v = bunny.getLocalTranslation();
+            bunny.setLocalTranslation(v.x, v.y + jumpArc*speed*2/3, v.z);
+        }
+        else
+        {
+            Vector3f v = bunny.getLocalTranslation();
+            if(v.y>bunny_starting_altitude)
+            bunny.setLocalTranslation(v.x, v.y - jumpArc*speed/2, v.z);
+        }
     }
 
     @Override
