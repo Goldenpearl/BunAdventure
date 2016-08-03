@@ -16,6 +16,8 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.scene.CameraNode;
+import com.jme3.scene.control.CameraControl;
 /**
  * test
  * @author normenhansen
@@ -86,6 +88,7 @@ public class Main extends SimpleApplication {
         rootNode.addLight(sun);
         initKeys();
     }
+    
 /** Custom Keybinding: Map named actions to inputs. */
   private void initKeys() {
     // You can map one or several inputs to one named action
