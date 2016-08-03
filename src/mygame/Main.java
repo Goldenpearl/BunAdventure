@@ -35,7 +35,7 @@ public class Main extends SimpleApplication {
     Boolean isJumping = false;
     Float jumpArc = .001f;
     float bunny_starting_altitude = -3f;
-    float camAbove =3.0f;
+    float camAbove =1.5f;
     float camBehind =3.5f;
     float camCenter = 2.0f;
     @Override
@@ -164,10 +164,10 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float tpf) {
        // bunnyCube.rotate(0, 2*tpf, 0);
         Vector3f v = bunny.getLocalTranslation();
-        cam.setLocation(new Vector3f(v.x + camCenter, v.y +camAbove, v.z+camBehind));
+        cam.setLocation(new Vector3f(v.x + camCenter, camAbove, v.z+camBehind));
         if(isJumping)
         {
-            bunny.setLocalTranslation(v.x, v.y + jumpArc*speed*2/3, 3.0f);
+            bunny.setLocalTranslation(v.x, v.y + jumpArc*speed*2/3, v.z);
             //TODO shake camera when jumping; dont follow z so closeley
         }
         else
