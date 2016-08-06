@@ -14,7 +14,7 @@ import com.jme3.math.Quaternion;
  */
 public class Player{
     
-    private static final float BUNNY_STARTING_ALTITUDE=2.0f;
+    private static final float BUNNY_STARTING_ALTITUDE=-2.0f;
     private static final Vector3f STARTING_LOCATION = new Vector3f(0.0f, BUNNY_STARTING_ALTITUDE, 0.0f);
     private static final float BUNNY_RUN_SPEED = 10.0f;
     private static final float BUNNY_FALL_SPEED = 0.20f;

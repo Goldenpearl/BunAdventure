@@ -16,6 +16,8 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.font.BitmapText;
+
 /**
  * test
  * @author normenhansen
@@ -28,65 +30,46 @@ public class Main extends SimpleApplication {
     }
     Player player;
     Boolean isRunning=true;
-    float camAbove =5.0f;
+    float camAbove =2.5f;
     float camBehind =3.5f;
     float camCenter = 2.0f;
     @Override
     public void simpleInitApp() {
-         /** create a blue box at coordinates (1,-1,1) */
-       Box box1 = new Box(1,1,1);
-        Geometry bunnyCube = new Geometry("blue cube", box1);
-        bunnyCube.setLocalTranslation(new Vector3f(1,-1,1));
-        Material mat1 = new Material(assetManager, 
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", ColorRGBA.Blue);
-        bunnyCube.setMaterial(mat1);
-    
-        /** create a red box straight above the blue one at (1,3,1) */
-        Box box2 = new Box(1,1,1);      
-        Geometry red = new Geometry("Box", box2);
-        red.setLocalTranslation(new Vector3f(1,3,1));
-        Material mat2 = new Material(assetManager, 
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setColor("Color", ColorRGBA.Red);
-        red.setMaterial(mat2);
-        
-         /** Create a pivot node at (0,0,0) and attach it to the root node */
-        Node pivot = new Node("pivot");
-        rootNode.attachChild(pivot); // put this node in the scene
+        initCrossHairs();
 
-        /** Attach the two boxes to the *pivot* node. (And transitively to the root node.) */
-        pivot.attachChild(bunnyCube);
-        pivot.attachChild(red);
-        /** Rotate the pivot node: Note that both boxes have rotated! */
-        pivot.rotate(.4f,.4f,0f);
-        // Create a wall with a simple texture from test_data
-        
-        Box box = new Box(2.5f,2.5f,1.0f);
-        Spatial wall = new Geometry("Box", box );
-        Material mat_brick = new Material( 
-            assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat_brick.setTexture("ColorMap", 
-            assetManager.loadTexture("Textures/brick_texture3348.jpg"));
-        wall.setMaterial(mat_brick);
-        wall.setLocalTranslation(2.0f,-2.5f,0.0f);
-        rootNode.attachChild(wall);
-        
-         // Load a model
-        Spatial bunny = assetManager.loadModel("Models/bun/bun.j3o");
-        bunny.scale(0.35f, 0.35f, 0.35f);
-        bunny.rotate(0.0f, -3.0f, 0.0f);
-        rootNode.attachChild(bunny);
         // You must add a light to make the model visible
         DirectionalLight sun = new DirectionalLight();
         sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f));
         rootNode.addLight(sun);
         initKeys();
+        initPlayer();
+        initMap();
+    }
+    private void initPlayer()
+    {
+        Spatial bunny = assetManager.loadModel("Models/bun/bun.j3o");
+        bunny.scale(0.35f, 0.35f, 0.35f);
+        bunny.rotate(0.0f, -3.0f, 0.0f);
+        //rootNode.attachChild(bunny);
         player = new Player(bunny);
         rootNode.attachChild(player.getNode());
-        
     }
-    
+    private void initMap()
+    {
+        DemoMap map = new DemoMap(this);
+        rootNode.attachChild(map.getNode());
+    }
+     /** A centred plus sign to help the player aim. */
+  protected void initCrossHairs() {
+    setDisplayStatView(false);
+    guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+    BitmapText ch = new BitmapText(guiFont, false);
+    ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
+    ch.setText("+"); // crosshairs
+    ch.setLocalTranslation( // center
+      settings.getWidth() / 2 - ch.getLineWidth()/2, settings.getHeight() / 2 + ch.getLineHeight()/2, 0);
+    guiNode.attachChild(ch);
+  }
 /** Custom Keybinding: Map named actions to inputs. */
   private void initKeys() {
        inputManager.deleteMapping( SimpleApplication.INPUT_MAPPING_MEMORY );
